@@ -3,6 +3,9 @@
 #include <string.h>
 #include <time.h>
 
+
+// TO-DO: Program only accepts string as "HelloWorld" and not "Hello World"
+
 struct Admin {
     char admin_Username[30];
     char admin_Password[30];
@@ -26,6 +29,8 @@ int randomDigitGenerator() {
 void addProduct(struct Product *products, int *productCount, const char *owner) {
     struct Product newProduct;
 
+    printf("\n\n\n----------ADD PRODUCT----------\n\n");
+
     newProduct.product_ID = *productCount + 1;  // Auto-increment ID
     printf("Enter product name: ");
     scanf("%49s", newProduct.product_Name);
@@ -38,12 +43,15 @@ void addProduct(struct Product *products, int *productCount, const char *owner) 
 
     products[*productCount] = newProduct;
     (*productCount)++;
-    printf("Product added successfully!\n");
+    printf("\nProduct added successfully!\n");
+
+    printf("\n----------ADD PRODUCT----------");
 }
 
 // Delete a product
 void deleteProduct(struct Product *products, int *productCount, const char *owner) {
     int id, found = 0;
+    printf("\n\n\n---------DELETE PRODUCT--------\n\n");
     printf("Enter product ID to delete: ");
     scanf("%d", &id);
 
@@ -54,19 +62,23 @@ void deleteProduct(struct Product *products, int *productCount, const char *owne
                 products[j] = products[j + 1];
             }
             (*productCount)--;
-            printf("Product deleted successfully.\n");
+            printf("\nProduct deleted successfully.\n");
+            printf("\n---------DELETE PRODUCT--------\n");
             return;
         }
     }
 
     if (!found) {
         printf("Product not found or you don't have permission to delete it.\n");
+        printf("\n---------DELETE PRODUCT---------\n");
     }
+
 }
 
 // Update a product
 void updateProduct(struct Product *products, int productCount, const char *owner) {
     int id, found = 0;
+    printf("\n\n\n---------UPDATE PRODUCT---------\n\n");
     printf("Enter product ID to update: ");
     scanf("%d", &id);
 
@@ -79,19 +91,22 @@ void updateProduct(struct Product *products, int productCount, const char *owner
             scanf("%d", &products[i].product_Quantity);
             printf("Enter new product price: ");
             scanf("%d", &products[i].product_Price);
-            printf("Product updated successfully.\n");
+            printf("\nProduct updated successfully.\n");
+            printf("\n---------UPDATE PRODUCT---------");
             return;
         }
+
     }
 
     if (!found) {
-        printf("Product not found or you don't have permission to update it.\n");
+        printf("\nProduct not found or you don't have permission to update it.\n");
+        printf("\n----------UPDATE PRODUCT-----------");
     }
 }
 
 // View all products for the logged-in admin
 void viewProducts(struct Product *products, int productCount, const char *owner) {
-    printf("\nYour Products:\n");
+    printf("\n\n\n---------PRODUCT DETAILS---------\n\n");
     for (int i = 0; i < productCount; i++) {
         if (strcmp(products[i].product_Owner, owner) == 0) {
             printf("ID: %d, Name: %s, Quantity: %d, Price: %d\n",
@@ -101,6 +116,7 @@ void viewProducts(struct Product *products, int productCount, const char *owner)
                    products[i].product_Price);
         }
     }
+    printf("\n---------PRODUCT DETAILS---------\n");
 }
 
 int main() {
@@ -123,7 +139,7 @@ int main() {
     }
 
     // Root admin setup
-    printf("\nCreating new login for Admin...\n");
+    printf("Creating new login for Admin...\n\n");
     printf("Enter Admin username: ");
     scanf("%29s", admin[0].admin_Username);
     printf("Enter new Password: ");
@@ -135,19 +151,19 @@ int main() {
     printf("\n\n-----------ROOT ADDED----------");
     printf("\nUsername: %s", admin[0].admin_Username);
     printf("\nCode: %s\nUse this code to reset password\nDON'T SHARE IT!", admin[0].admin_Code);
-    printf("\n--------------------------------\n");
+    printf("\n-------------------------------\n");
 
     // Main loop
     do {
-        printf("\n-------CHOOSE AN OPTION-------\n");
+        printf("\n\n\n--------CHOOSE AN OPTION-------\n");
         printf("\n1 = Register new User\n2 = Login\n3 = EXIT\nChoose: ");
         scanf("%d", &choice);
-        printf("-------CHOOSE AN OPTION-------");
+        printf("\n--------CHOOSE AN OPTION-------\n");
 
         switch (choice) {
             case 1: {
                 usernameExists=0;
-                printf("\n\n---------NEW USER---------\n");
+                printf("\n\n\n-----------NEW USER------------\n\n");
                 printf("Enter Admin username: ");
                 scanf("%29s", adminUsername);
 
@@ -161,7 +177,7 @@ int main() {
 
                 // If username exists, prompt the user to enter a new username
                 if (usernameExists) {
-                    printf("\n!!Username already exists! Please choose a different username!!\n");
+                    printf("\nUsername already exists!\nPlease choose a different username!!\n");
                 } else {
                     originalSize++;
                     admin = realloc(admin, originalSize * sizeof(struct Admin));
@@ -183,13 +199,13 @@ int main() {
 
                     printf("New user registered successfully!\n");
                 }
-                printf("\n---------NEW USER---------");
+                printf("\n-----------NEW USER------------");
                 break;
             }
 
             case 2: {
                 // Login and manage products
-                printf("\n------------LOGIN------------\n");
+                printf("\n\n\n-------------LOGIN-------------\n");
                 printf("\nEnter Admin username: ");
                 scanf("%29s", adminUsername);
                 printf("Enter Password (or type 'RES' to reset): ");
@@ -197,7 +213,7 @@ int main() {
 
                 int loggedIn = 0;
                 if (strcmp(adminPassword, "RES") == 0) {
-                    printf("\n-------PASSWORD RESET---------");
+                    printf("\n\n--------PASSWORD RESET---------\n");
                     printf("\nEnter secret code: ");
                     scanf("%s", adminCode);
                     for (int i = 0; i < originalSize; i++) {
@@ -216,25 +232,27 @@ int main() {
                     }
 
                     if (reset == 1) {
-                        printf("\n-------PASSWORD RESET---------");
+                        printf("\n--------PASSWORD RESET---------\n");
                     } else {
                         printf("\nUsername or Code incorrect!");
-                        printf("\n-------PASSWORD RESET---------");
+                        printf("\n--------PASSWORD RESET---------\n");
                     }
-                    printf("\n------------LOGIN------------");
+                    printf("\n------------LOGIN--------------");
                 } else {
                     for (int i = 0; i < originalSize; i++) {
                         if (strcmp(admin[i].admin_Username, adminUsername) == 0 &&
                             strcmp(admin[i].admin_Password, adminPassword) == 0) {
                             loggedIn = 1;
-                            printf("Login Successful!\n");
-                            printf("\n------------LOGIN------------");
+                            printf("\nLogin Successful!\n");
+                            printf("\n------------LOGIN--------------");
 
                             int innerChoice;
                             do {
+                                printf("\n\n\n----------DASHBOARD------------\n");
                                 printf("\n1. Add Product\n2. Delete Product\n3. Update Product\n4. View Products\n5. Log Out\n");
                                 printf("Enter your choice: ");
                                 scanf("%d", &innerChoice);
+                                printf("\n----------DASHBOARD------------");
 
                                 switch (innerChoice) {
                                     case 1:
@@ -250,7 +268,7 @@ int main() {
                                         viewProducts(products, productCount, admin[i].admin_Username);
                                         break;
                                     case 5:
-                                        printf("Logging out...\n");
+                                        printf("\n\nLogging out...\n");
                                         break;
                                     default:
                                         printf("Invalid choice!\n");
